@@ -1,8 +1,8 @@
 {
-  "status": "closed",
+  "status": "open",
   "reason": "new update available",
   "min_version": "1.2.3",
   "latest_version": "1.2.3",
   "force_update": true,
-  "sig": "5GEqrm7lVxuLEXdsPIUyqnK+tMfKFVvvjxaLgNog/BqPPBqCZhcWC4v22KeC/oTQGwh0p+iZ9yF4pTSEfEkMAw=="
+  "sig": "5YAAPFT8MeeYx4qqX0TIwQl0NlOKAgsHYNJlSa/HlGxzKvDPfGpK1HhAf6ErFYndImt/dI9aWlsnmXj3ZaQIDQ=="
 }
