@@ -1,8 +1,8 @@
 {
-  "status": "closed",
-  "reason": "shit",
-  "min_version": "1.2.1",
-  "latest_version": "1.2.2",
-  "force_update": false,
-  "sig": "wKC5NxvSefRfA+lNr72ACAAcQhiDOb+zdiWsChgcIt8dRsFo5GK3UVwgY71BrJ9SWEqASrpQwrajXNBm6nHfDw=="
+  "status": "open",
+  "reason": "",
+  "min_version": "1.2-b2",
+  "latest_version": "1.2-b2",
+  "force_update": true,
+  "sig": "5mqPVgA6j6/nk2w6FvLoVC1iuTojRTQM/Ykl/uzu63d7RHaYtrEx8OekEOPWxrTTpEB0kOJt598o5Xkkjg9lCQ=="
 }
