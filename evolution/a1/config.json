@@ -2,7 +2,7 @@
   "version": 1,
   "ts_unix": 1769318400,
   "allow_login": false,
-  "deny_reason": "SHIT",
-  "kill_switch": false,
+  "deny_reason": "net",
+  "kill_switch": true,
   "refresh_sec": 10
 }
