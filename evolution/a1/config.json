@@ -1,8 +1,8 @@
 {
   "version": 1,
   "ts_unix": 1769318400,
-  "allow_login": true,
-  "deny_reason": "123s",
+  "allow_login": false,
+  "deny_reason": "SHIT",
   "kill_switch": false,
-  "refresh_sec": 60
+  "refresh_sec": 10
 }
