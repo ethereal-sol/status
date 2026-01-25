@@ -40,14 +40,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "key_size_bytes=$(wc -c < ed25519_priv.pem)"
-          head -n 1 ed25519_priv.pem
-          openssl pkey -in ed25519_priv.pem -noout
-          openssl pkeyutl -sign -inkey ed25519_priv.pem -in public/config.json -out config.sig.bin
-          openssl base64 -A -in config.sig.bin -out public/config.sig
-
-          rm -f config.sig.bin ed25519_priv.pem
-
+          openssl pkeyutl -provider default -sign -rawin \
+            -inkey ed25519_priv.pem -in public/config.json -out config.sig.bin
+            openssl base64 -A -in config.sig.bin -out public/config.sig
+            rm -f config.sig.bin ed25519_priv.pem
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
