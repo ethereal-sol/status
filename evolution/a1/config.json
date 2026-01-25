@@ -1,7 +1,7 @@
 {
   "version": 1,
   "ts_unix": 1769318400,
-  "allow_login": false,
+  "allow_login": true,
   "deny_reason": "123s",
   "kill_switch": false,
   "refresh_sec": 60
