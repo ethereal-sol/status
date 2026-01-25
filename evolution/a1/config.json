@@ -2,7 +2,7 @@
   "version": 1,
   "ts_unix": 1769318400,
   "allow_login": false,
-  "deny_reason": "123sadasd",
+  "deny_reason": "123sadad",
   "kill_switch": false,
   "refresh_sec": 60
 }
