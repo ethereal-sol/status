@@ -1,0 +1,55 @@
+name: Sign config and deploy Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "config.json"
+      - ".github/workflows/sign-and-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore private key
+        shell: bash
+        run: |
+          echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
+          chmod 600 ed25519_priv.pem
+
+      - name: Sign config.json -> config.sig
+        shell: bash
+        run: |
+          openssl pkeyutl -sign -inkey ed25519_priv.pem -in public/config.json -out config.sig.bin
+          openssl base64 -A -in config.sig.bin -out public/config.sig
+
+          rm -f config.sig.bin ed25519_priv.pem
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
