@@ -34,10 +34,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo "size=$(wc -c < ed25519_priv.pem)"
-          head -n 1 ed25519_priv.pem
-          tail -n 1 ed25519_priv.pem
-          openssl pkey -in ed25519_priv.pem -noout
+          openssl pkey -in ed25519_priv.pem -text_pub -noout | head -n 5
 
       - name: Sign config.json -> config.sig
         shell: bash
