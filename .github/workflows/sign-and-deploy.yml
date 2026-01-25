@@ -41,9 +41,10 @@ jobs:
         run: |
           set -euo pipefail
           openssl pkeyutl -provider default -sign -rawin \
-            -inkey ed25519_priv.pem -in public/config.json -out config.sig.bin
-            openssl base64 -A -in config.sig.bin -out public/config.sig
+            -inkey ed25519_priv.pem -in evolution/a1/config.json -out config.sig.bin
+            openssl base64 -A -in config.sig.bin -out evolution/a1/config.sig
             rm -f config.sig.bin ed25519_priv.pem
+            
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
