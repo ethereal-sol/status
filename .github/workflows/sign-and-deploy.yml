@@ -36,15 +36,23 @@ jobs:
           set -euo pipefail
           openssl pkey -in ed25519_priv.pem -text_pub -noout | head -n 5
 
-      - name: Sign config.json -> config.sig
+      - name: Sign eth/config.json -> eth/config.sig
         shell: bash
         run: |
           set -euo pipefail
           openssl pkeyutl -provider default -sign -rawin \
-            -inkey ed25519_priv.pem -in evolution/a1/config.json -out config.sig.bin
-            openssl base64 -A -in config.sig.bin -out evolution/a1/config.sig
-            rm -f config.sig.bin ed25519_priv.pem
-            
+            -inkey ed25519_priv.pem -in eth/config.json -out eth/config.sig.bin
+          openssl base64 -A -in eth/config.sig.bin -out eth/config.sig
+          rm -f eth/config.sig.bin ed25519_priv.pem
+
+      - name: Show eth contents (debug)
+        shell: bash
+        run: |
+          echo "Contents of eth before upload:"
+          ls -la eth || true
+          echo "Top-level repo files:"
+          ls -la
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
