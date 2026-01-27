@@ -34,6 +34,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          set -Eeuo pipefail
+          trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
+          set -x
+
           CFG="eth/evolution/a1/config.json"
           SIGBIN="eth/evolution/a1/config.sig.bin"
           SIGTXT="eth/evolution/a1/config.sig"
@@ -66,3 +70,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        
