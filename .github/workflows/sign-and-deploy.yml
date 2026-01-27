@@ -48,7 +48,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: evolution/a1
+          path:
 
   deploy:
     needs: build
