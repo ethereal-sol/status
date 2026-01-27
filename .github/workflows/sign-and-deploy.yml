@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "evolution/a1/config.json"
+      - "eth/config.json"
       - ".github/workflows/sign-and-deploy.yml"
   workflow_dispatch:
 
