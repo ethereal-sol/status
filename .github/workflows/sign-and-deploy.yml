@@ -89,10 +89,21 @@ jobs:
           echo "=== Files that will be published (eth/) ==="
           find eth -type f -maxdepth 8 -print
 
+      - name: dir checking
+        shell: bash
+        run: |
+          set -euo pipefall
+          echo "PWD=$(pwd)"
+          echo "WORKSPACE=$GITHUB_WORKSPACE"
+          ls -la
+          test -d "$GITHUB_WORKSPACE/eth"
+          echo "eth dir ok, sample:"
+          find "$GITHUB_WORKSPACE/eth" -maxdepth 3 -type f -print | head -n 50
+           
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: $ {{github.workspace }}/eth
+          path: $ {{ github.workspace }}/eth
           name: github-pages
 
   deploy:
