@@ -103,7 +103,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: $ {{ github.workspace }}/eth
+          path: ${{ github.workspace }}/eth #ya eblan #2
           name: github-pages
 
   deploy:
