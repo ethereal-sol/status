@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Restore private ke
+      - name: Restore private key
         shell: bash
         run: |
           echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
@@ -34,7 +34,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          set -Eeuo pipefail
           trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
           set -x
 
@@ -58,7 +57,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: eth/
 
   deploy:
     needs: build
@@ -70,4 +69,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        
