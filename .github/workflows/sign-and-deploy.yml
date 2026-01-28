@@ -29,12 +29,12 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install deps (PyNaCl + cryptography)
+      - name: Install deps (PyNaCl + asn1crypto)
         shell: bash
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install pynacl cryptography
+          python -m pip install pynacl asn1crypto
 
       - name: Sign all eth/**/config.json -> config.sig (base64, libsodium; uses PEM secret)
         shell: bash
@@ -43,14 +43,12 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import os, base64
+          import os, re, base64
           from pathlib import Path
 
           from nacl.signing import SigningKey
-          from cryptography.hazmat.primitives.serialization import (
-              load_pem_private_key, Encoding, PrivateFormat, NoEncryption
-          )
-          from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+          from asn1crypto.keys import PrivateKeyInfo
+          from asn1crypto.core import OctetString
 
           b64 = (os.getenv("ED25519_PRIV_PEM_B64") or "").strip()
           if not b64:
@@ -63,11 +61,35 @@ jobs:
 
           pem = pem.replace(b"\r\n", b"\n")
 
-          key = load_pem_private_key(pem, password=None)
-          if not isinstance(key, Ed25519PrivateKey):
-              raise SystemExit("::error::PEM is not an Ed25519 private key")
+          m = re.search(
+              br"-----BEGIN PRIVATE KEY-----\s*(.*?)\s*-----END PRIVATE KEY-----",
+              pem,
+              re.S,
+          )
+          if not m:
+              raise SystemExit("::error::PEM must be PKCS")
 
-          seed = key.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
+          der = base64.b64decode(re.sub(br"\s+", b"", m.group(1)))
+
+          pki = PrivateKeyInfo.load(der)
+          algo = pki["private_key_algorithm"]["algorithm"].dotted
+          if algo != "1.3.101.112":
+              raise SystemExit(f"::error::Not Ed25519 PKCS#8 (OID={algo})")
+
+          pk = pki["private_key"].native
+          if isinstance(pk, str):
+              pk = pk.encode()
+
+          seed = pk
+          if len(seed) != 32:
+              try:
+                  seed = OctetString.load(pk).native
+              except Exception:
+                  pass
+
+          if len(seed) != 32:
+              raise SystemExit(f"::error::Failed to extract 32-byte seed (got {len(seed)})")
+
           sk = SigningKey(seed)
 
           cfgs = list(Path("eth").rglob("config.json"))
@@ -83,28 +105,17 @@ jobs:
               print(f"Signed {cfg} -> {cfg.with_name('config.sig')}")
           PY
 
-      - name: Debug tree (eth/)
+      - name: Check publish dir
         shell: bash
         run: |
-          echo "=== Files that will be published (eth/) ==="
-          find eth -type f -maxdepth 8 -print
+          set -euo pipefail
+          test -d "${GITHUB_WORKSPACE}/eth"
+          find "${GITHUB_WORKSPACE}/eth" -maxdepth 3 -type f -print | head -n 80
 
-      - name: dir checking
-        shell: bash
-        run: |
-          set -euo pipefail # ya eblan
-          echo "PWD=$(pwd)"
-          echo "WORKSPACE=$GITHUB_WORKSPACE"
-          ls -la
-          test -d "$GITHUB_WORKSPACE/eth"
-          echo "eth dir ok, sample:"
-          find "$GITHUB_WORKSPACE/eth" -maxdepth 3 -type f -print | head -n 50
-           
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ github.workspace }}/eth #ya eblan #2
-          name: github-pages
+          path: ${{ github.workspace }}/eth
 
   deploy:
     needs: build
