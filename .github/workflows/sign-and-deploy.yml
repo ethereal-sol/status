@@ -1,4 +1,4 @@
-name: Sign config and deploy Pages
+name: Sign configs and deploy Pages
 
 on:
   push:
@@ -20,34 +20,108 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Restore private key
-        shell: bash
-        run: |
-          echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
-          chmod 600 ed25519_priv.pem
-
-      - name: Sign eth/evolution/a1/config.json -> eth/evolution/a1/config.sig
+      - name: Restore Ed25519 private key (from base64 secret)
         shell: bash
         run: |
           set -euo pipefail
-          trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
-          set -x
+          umask 077
 
-          CFG="eth/evolution/a1/config.json"
-          SIGBIN="eth/evolution/a1/config.sig.bin"
-          SIGTXT="eth/evolution/a1/config.sig"
+          KEY_FILE="$(mktemp -p . ed25519_priv_XXXXXX.pem)"
+          echo "KEY_FILE=$KEY_FILE" >> "$GITHUB_ENV"
 
-          test -f "$CFG"
-          openssl pkeyutl -provider default -sign -rawin -inkey ed25519_priv.pem -in "$CFG" -out "$SIGBIN"
-          openssl base64 -A -in "$SIGBIN" -out "$SIGTXT"
+          printf '%s' "${{ secrets.ED25519_PRIV_PEM_B64 }}" \
+            | tr -d '\r' \
+            | base64 --decode > "$KEY_FILE"
 
-          rm -f "$SIGBIN" ed25519_priv.pem
+          chmod 600 "$KEY_FILE"
 
-      - name: Debug tree
+          head -n 1 "$KEY_FILE" | grep -q "BEGIN PRIVATE KEY" || {
+            echo "::error::Secret is not a PEM private key (expected BEGIN PRIVATE KEY)."
+            exit 1
+          }
+
+      - name: OpenSSL sanity check (providers + ed25519 support + key type)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "::group::OpenSSL info"
+          openssl version -a
+          echo "::endgroup::"
+
+          echo "::group::Providers"
+          openssl list -providers || true
+          echo "::endgroup::"
+
+          echo "::group::Signature algorithms (ed25519 should exist)"
+          openssl list -signature-algorithms 2>/dev/null | grep -i ed25519 || true
+          echo "::endgroup::"
+
+          echo "::group::Key type (public part)"
+          openssl pkey -in "$KEY_FILE" -noout -text_pub | head -n 30
+          echo "::endgroup::"
+
+          openssl pkey -in "$KEY_FILE" -noout -text_pub | grep -qi "ED25519" || {
+            echo "::error::Key is not ED25519 (check the secret)."
+            exit 1
+          }
+
+      - name: Sign all eth/**/config.json -> config.sig (base64)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          export OPENSSL_CONF=/dev/null
+
+          found=0
+
+          while IFS= read -r -d '' CFG; do
+            found=1
+            DIR="$(dirname "$CFG")"
+            SIGBIN="$DIR/config.sig.bin"
+            SIGTXT="$DIR/config.sig"
+
+            echo "::group::Signing $CFG"
+
+            openssl pkeyutl \
+              -provider default -provider base \
+              -sign -rawin \
+              -inkey "$KEY_FILE" \
+              -in "$CFG" \
+              -out "$SIGBIN"
+
+            openssl base64 -A -in "$SIGBIN" -out "$SIGTXT"
+
+            openssl pkey -in "$KEY_FILE" -pubout -out "$DIR/ed25519_pub.pem"
+            openssl pkeyutl \
+              -provider default -provider base \
+              -verify -rawin \
+              -pubin -inkey "$DIR/ed25519_pub.pem" \
+              -in "$CFG" \
+              -sigfile "$SIGBIN"
+
+            rm -f "$SIGBIN" "$DIR/ed25519_pub.pem"
+
+            echo "::endgroup::"
+          done < <(find eth -type f -name "config.json" -print0)
+
+          if [ "$found" -eq 0 ]; then
+            echo "::error::No eth/**/config.json found to sign."
+            exit 1
+          fi
+
+      - name: Cleanup private key
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          [ -n "${KEY_FILE:-}" ] && rm -f "$KEY_FILE" || true
+
+      - name: Debug tree (eth/)
         shell: bash
         run: |
           echo "=== Files that will be published (eth/) ==="
@@ -56,7 +130,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: eth/
 
   deploy:
     needs: build
@@ -64,6 +138,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
