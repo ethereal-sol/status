@@ -92,7 +92,7 @@ jobs:
       - name: dir checking
         shell: bash
         run: |
-          set -euo pipefall
+          set -euo pipefail # ya eblan
           echo "PWD=$(pwd)"
           echo "WORKSPACE=$GITHUB_WORKSPACE"
           ls -la
