@@ -43,7 +43,7 @@ jobs:
 
           test -f "$CFG"
 
-          openssl pkeyutl -sign -inkey ed25519_priv.pem -in "$CFG" -out "$SIGBIN"
+          openssl pkeyutl -sign -rawin -inkey ed25519_priv.pem -in "$CFG" -out "$SIGBIN"
           openssl base64 -A -in "$SIGBIN" -out "$SIGTXT"
 
           rm -f "$SIGBIN" ed25519_priv.pem
