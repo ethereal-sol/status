@@ -92,7 +92,8 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: eth/
+          path: $ {{github.workspace }}/eth
+          name: github-pages
 
   deploy:
     needs: build
