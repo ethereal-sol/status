@@ -20,117 +20,75 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Restore Ed25519 private key (from base64 secret)
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install deps (PyNaCl + cryptography)
         shell: bash
         run: |
           set -euo pipefail
-          umask 077
+          python -m pip install --upgrade pip
+          python -m pip install pynacl cryptography
 
-          KEY_FILE="$(mktemp -p . ed25519_priv_XXXXXX.pem)"
-          echo "KEY_FILE=$KEY_FILE" >> "$GITHUB_ENV"
-
-          printf '%s' "${{ secrets.ED25519_PRIV_PEM_B64 }}" \
-            | tr -d '\r' \
-            | base64 --decode > "$KEY_FILE"
-
-          chmod 600 "$KEY_FILE"
-
-          head -n 1 "$KEY_FILE" | grep -q "BEGIN PRIVATE KEY" || {
-            echo "::error::Secret is not a PEM private key (expected BEGIN PRIVATE KEY)."
-            exit 1
-          }
-
-      - name: OpenSSL sanity check (providers + ed25519 support + key type)
+      - name: Sign all eth/**/config.json -> config.sig (base64, libsodium; uses PEM secret)
         shell: bash
+        env:
+          ED25519_PRIV_PEM_B64: ${{ secrets.ED25519_PRIV_PEM_B64 }}
         run: |
           set -euo pipefail
-          echo "::group::OpenSSL info"
-          openssl version -a
-          echo "::endgroup::"
+          python - <<'PY'
+          import os, base64
+          from pathlib import Path
 
-          echo "::group::Providers"
-          openssl list -providers || true
-          echo "::endgroup::"
+          from nacl.signing import SigningKey
+          from cryptography.hazmat.primitives.serialization import (
+              load_pem_private_key, Encoding, PrivateFormat, NoEncryption
+          )
+          from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-          echo "::group::Signature algorithms (ed25519 should exist)"
-          openssl list -signature-algorithms 2>/dev/null | grep -i ed25519 || true
-          echo "::endgroup::"
+          b64 = (os.getenv("ED25519_PRIV_PEM_B64") or "").strip()
+          if not b64:
+              raise SystemExit("::error::Missing secret ED25519_PRIV_PEM_B64")
 
-          echo "::group::Key type (public part)"
-          openssl pkey -in "$KEY_FILE" -noout -text_pub | head -n 30
-          echo "::endgroup::"
+          try:
+              pem = base64.b64decode(b64, validate=True)
+          except Exception:
+              raise SystemExit("::error::ED25519_PRIV_PEM_B64 is not valid base64")
 
-          openssl pkey -in "$KEY_FILE" -noout -text_pub | grep -qi "ED25519" || {
-            echo "::error::Key is not ED25519 (check the secret)."
-            exit 1
-          }
+          pem = pem.replace(b"\r\n", b"\n")
 
-      - name: Sign all eth/**/config.json -> config.sig (base64)
-        shell: bash
-        run: |
-          set -euo pipefail
+          key = load_pem_private_key(pem, password=None)
+          if not isinstance(key, Ed25519PrivateKey):
+              raise SystemExit("::error::PEM is not an Ed25519 private key")
 
-          export OPENSSL_CONF=/dev/null
+          seed = key.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
+          sk = SigningKey(seed)
 
-          found=0
+          cfgs = list(Path("eth").rglob("config.json"))
+          if not cfgs:
+              raise SystemExit("::error::No eth/**/config.json found")
 
-          while IFS= read -r -d '' CFG; do
-            found=1
-            DIR="$(dirname "$CFG")"
-            SIGBIN="$DIR/config.sig.bin"
-            SIGTXT="$DIR/config.sig"
-
-            echo "::group::Signing $CFG"
-
-            export OPENSSL_FORCE_FIPS_MODE=0
-            export OPENSSL_CONF=/dev/null
-
-            openssl pkeyutl \
-              -provider default -provider base \
-              -propquery 'fips=no' \
-              -sign -rawin \
-              -inkey "$KEY_FILE" \
-              -in "$CFG" \
-              -out "$SIGBIN"
-
-            openssl base64 -A -in "$SIGBIN" -out "$SIGTXT"
-
-            openssl pkey -in "$KEY_FILE" -pubout -out "$DIR/ed25519_pub.pem"
-            openssl pkeyutl \
-              -provider default -provider base \
-              -propquery 'fips=no' \
-              -verify -rawin \
-              -pubin -inkey "$DIR/ed25519_pub.pem" \
-              -in "$CFG" \
-              -sigfile "$SIGBIN"
-
-            rm -f "$SIGBIN" "$DIR/ed25519_pub.pem"
-
-            echo "::endgroup::"
-          done < <(find eth -type f -name "config.json" -print0)
-
-          if [ "$found" -eq 0 ]; then
-            echo "::error::No eth/**/config.json found to sign."
-            exit 1
-          fi
-
-      - name: Cleanup private key
-        if: always()
-        shell: bash
-        run: |
-          set -euo pipefail
-          [ -n "${KEY_FILE:-}" ] && rm -f "$KEY_FILE" || true
+          for cfg in cfgs:
+              sig = sk.sign(cfg.read_bytes()).signature
+              cfg.with_name("config.sig").write_text(
+                  base64.b64encode(sig).decode("ascii"),
+                  encoding="ascii"
+              )
+              print(f"Signed {cfg} -> {cfg.with_name('config.sig')}")
+          PY
 
       - name: Debug tree (eth/)
         shell: bash
         run: |
           echo "=== Files that will be published (eth/) ==="
-          find eth -type f -maxdepth 6 -print
+          find eth -type f -maxdepth 8 -print
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -143,7 +101,6 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
