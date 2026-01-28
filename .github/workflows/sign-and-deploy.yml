@@ -87,8 +87,12 @@ jobs:
 
             echo "::group::Signing $CFG"
 
+            export OPENSSL_FORCE_FIPS_MODE=0
+            export OPENSSL_CONF=/dev/null
+
             openssl pkeyutl \
               -provider default -provider base \
+              -propquery 'fips=no' \
               -sign -rawin \
               -inkey "$KEY_FILE" \
               -in "$CFG" \
@@ -99,6 +103,7 @@ jobs:
             openssl pkey -in "$KEY_FILE" -pubout -out "$DIR/ed25519_pub.pem"
             openssl pkeyutl \
               -provider default -provider base \
+              -propquery 'fips=no' \
               -verify -rawin \
               -pubin -inkey "$DIR/ed25519_pub.pem" \
               -in "$CFG" \
