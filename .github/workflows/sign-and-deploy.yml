@@ -27,26 +27,35 @@ jobs:
       - name: Restore private key
         shell: bash
         run: |
+          set -euo pipefail
           echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
           chmod 600 ed25519_priv.pem
 
-      - name: Sign eth/evolution/a1/config.json -> eth/evolution/a1/config.sig
+      - name: Sign JSON files (config.json + ui.json) in eth/evolution/a1/
         shell: bash
         run: |
           set -euo pipefail
           trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
           set -x
 
-          CFG="eth/evolution/a1/config.json"
-          SIGBIN="eth/evolution/a1/config.sig.bin"
-          SIGTXT="eth/evolution/a1/config.sig"
+          DIR="eth/evolution/a1"
 
-          test -f "$CFG"
+          sign_one () {
+            local f="$1"
+            local bin="$f.sig.bin"
+            local sig="$f.sig"
 
-          openssl pkeyutl -sign -rawin -inkey ed25519_priv.pem -in "$CFG" -out "$SIGBIN"
-          openssl base64 -A -in "$SIGBIN" -out "$SIGTXT"
+            test -f "$f"
 
-          rm -f "$SIGBIN" ed25519_priv.pem
+            openssl pkeyutl -sign -rawin -inkey ed25519_priv.pem -in "$f" -out "$bin"
+            openssl base64 -A -in "$bin" -out "$sig"
+            rm -f "$bin"
+          }
+
+          sign_one "$DIR/config.json"
+          sign_one "$DIR/ui.json"
+
+          rm -f ed25519_priv.pem
 
       - name: Debug tree
         shell: bash
