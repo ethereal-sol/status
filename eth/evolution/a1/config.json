@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "allow_login": true,
-  "deny_reason": "",
+  "allow_login": false,
+  "deny_reason": "ya lox",
   "kill_switch": false,
   "refresh_sec": 10
 }
