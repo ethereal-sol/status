@@ -1,4 +1,4 @@
-name: Sign configs and deploy Pages
+name: Sign config and deploy Pages
 
 on:
   push:
@@ -24,98 +24,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Restore private key
+        shell: bash
+        run: |
+          echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
+          chmod 600 ed25519_priv.pem
 
-      - name: Install deps (PyNaCl + asn1crypto)
+      - name: Sign eth/evolution/a1/config.json -> eth/evolution/a1/config.sig
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install pynacl asn1crypto
+          trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
+          set -x
 
-      - name: Sign all eth/**/config.json -> config.sig (base64, libsodium; uses PEM secret)
-        shell: bash
-        env:
-          ED25519_PRIV_PEM_B64: ${{ secrets.ED25519_PRIV_PEM_B64 }}
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import os, re, base64
-          from pathlib import Path
+          CFG="eth/evolution/a1/config.json"
+          SIGBIN="eth/evolution/a1/config.sig.bin"
+          SIGTXT="eth/evolution/a1/config.sig"
 
-          from nacl.signing import SigningKey
-          from asn1crypto.keys import PrivateKeyInfo
-          from asn1crypto.core import OctetString
+          test -f "$CFG"
 
-          b64 = (os.getenv("ED25519_PRIV_PEM_B64") or "").strip()
-          if not b64:
-              raise SystemExit("::error::Missing secret ED25519_PRIV_PEM_B64")
+          openssl pkeyutl -sign -rawin -inkey ed25519_priv.pem -in "$CFG" -out "$SIGBIN"
+          openssl base64 -A -in "$SIGBIN" -out "$SIGTXT"
 
-          try:
-              pem = base64.b64decode(b64, validate=True)
-          except Exception:
-              raise SystemExit("::error::ED25519_PRIV_PEM_B64 is not valid base64")
+          rm -f "$SIGBIN" ed25519_priv.pem
 
-          pem = pem.replace(b"\r\n", b"\n")
-
-          m = re.search(
-              br"-----BEGIN PRIVATE KEY-----\s*(.*?)\s*-----END PRIVATE KEY-----",
-              pem,
-              re.S,
-          )
-          if not m:
-              raise SystemExit("::error::PEM must be PKCS")
-
-          der = base64.b64decode(re.sub(br"\s+", b"", m.group(1)))
-
-          pki = PrivateKeyInfo.load(der)
-          algo = pki["private_key_algorithm"]["algorithm"].dotted
-          if algo != "1.3.101.112":
-              raise SystemExit(f"::error::Not Ed25519 PKCS#8 (OID={algo})")
-
-          pk = pki["private_key"].native
-          if isinstance(pk, str):
-              pk = pk.encode()
-
-          seed = pk
-          if len(seed) != 32:
-              try:
-                  seed = OctetString.load(pk).native
-              except Exception:
-                  pass
-
-          if len(seed) != 32:
-              raise SystemExit(f"::error::Failed to extract 32-byte seed (got {len(seed)})")
-
-          sk = SigningKey(seed)
-
-          cfgs = list(Path("eth").rglob("config.json"))
-          if not cfgs:
-              raise SystemExit("::error::No eth/**/config.json found")
-
-          for cfg in cfgs:
-              sig = sk.sign(cfg.read_bytes()).signature
-              cfg.with_name("config.sig").write_text(
-                  base64.b64encode(sig).decode("ascii"),
-                  encoding="ascii"
-              )
-              print(f"Signed {cfg} -> {cfg.with_name('config.sig')}")
-          PY
-
-      - name: Check publish dir
+      - name: Debug tree
         shell: bash
         run: |
-          set -euo pipefail
-          test -d "${GITHUB_WORKSPACE}/eth"
-          find "${GITHUB_WORKSPACE}/eth" -maxdepth 3 -type f -print | head -n 80
+          echo "=== Files that will be published (eth/) ==="
+          find eth -type f -maxdepth 6 -print
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ github.workspace }}/eth
+          path: eth/
 
   deploy:
     needs: build
