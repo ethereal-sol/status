@@ -1,19 +1,15 @@
 {
-  "strings": {
-    "ru": {
-      "loading.title": "loading..."
-    }
-  },
-  "lines": [
-    "test",
-    "testt"
-  ],
+  "software_name": "ethereal architectures",
+  "subscribe_text": "sub to our tg channels",
+  "button_left": "pastereal",
+  "button_right": "ethereal architectures",
+
+  "strings": { "ru": { "loading.title": "loading" } },
+
   "runtime": {
     "allow_access": true,
     "force_close_menu": false,
     "show_text": true,
-    "software_name": "ethereal architectures",
-    "subscribe_text": "sub to our channels",
     "message": "",
     "tg_left": "pastereal",
     "tg_right": "ethereal_solutions"
