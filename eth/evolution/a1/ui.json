@@ -12,8 +12,9 @@
     "allow_access": true,
     "force_close_menu": false,
     "show_text": true,
-    "software_name": "ethereal",
-    "message": "ww",
+    "software_name": "ethereal architectures",
+    "subscribe_text": "sub to our channels",
+    "message": "",
     "tg_left": "pastereal",
     "tg_right": "ethereal_solutions"
   }
