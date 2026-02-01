@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>qazaqdlc - status</title>
+  <style>
+    :root{
+      --bg0:#050505;--bg1:#0a0a0a;--bg2:#111111;
+      --fg:#e8e8e8;--muted:#a9a9a9;--sub:#8e8e8e;
+      --ok:#16a34a;--warn:#eab308;--part:#f59e0b;--down:#ef4444;--maint:#111111;
+      --card:rgba(255,255,255,.03);--border:rgba(255,255,255,.10);--border-soft:rgba(255,255,255,.06);
+      --glass-grad:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02))
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;color:var(--fg);
+      font:16px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Noto Sans",Arial;
+      background:radial-gradient(1200px 800px at 70% 20%,#121212 0%,#0c0c0c 60%,#050505 100%) fixed;
+      overflow-x:hidden}
+    .veil{position:fixed;inset:-20vmax;z-index:-2;pointer-events:none;
+      background:linear-gradient(120deg,rgba(255,255,255,.05),rgba(255,255,255,0) 40%),
+                 radial-gradient(120vmax 80vmax at 10% -10%,rgba(255,255,255,.06),transparent 60%),
+                 radial-gradient(120vmax 80vmax at 110% 110%,rgba(255,255,255,.04),transparent 60%),
+                 linear-gradient(180deg,var(--bg2),var(--bg1),var(--bg0));
+      filter:saturate(100%) contrast(105%);
+      animation:drift 18s ease-in-out infinite alternate}
+    @keyframes drift{from{transform:translate3d(-2%,-1%,0) scale(1.02)}to{transform:translate3d(2%,1%,0) scale(1.06)}}
+
+    .grain{position:fixed;inset:0;pointer-events:none;z-index:10;mix-blend-mode:overlay}
+    .grain::before{content:"";position:absolute;inset:-20%;background:transparent;filter:url(#grainy);opacity:.08;animation:grain-move 1.5s steps(4) infinite}
+    @keyframes grain-move{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-10%,-10%,0)}}
+
+    .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:28px 18px 80px}
+    header.site{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding:8px 10px}
+    .logo{width:36px;height:36px;border-radius:12px;background:var(--glass-grad);border:1px solid var(--border);display:grid;place-items:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 6px 20px rgba(0,0,0,.35)}
+    .logo::before{content:"S";font-weight:900;letter-spacing:.02em;color:#d1d1d1}
+    .brand{font-weight:800;letter-spacing:.2px}.muted{color:var(--muted)}
+
+    .banner{position:relative;border-radius:24px;padding:22px 22px;background:var(--glass-grad);border:1px solid var(--border);box-shadow:0 10px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);display:flex;align-items:center;gap:14px}
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 0 0 rgba(255,255,255,.25)}
+    .dot.pulse{animation:pulse 1.8s ease-out infinite}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 currentColor}100%{box-shadow:0 0 0 14px rgba(255,255,255,0)}}
+    .banner h1{margin:0;font-size:clamp(18px,2.6vw,26px)}.banner small{display:block;color:var(--sub)}
+
+    .bar{display:flex;gap:10px;align-items:center;margin:14px 0 26px}
+    .chip{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:6px 12px;border:1px solid var(--border-soft);background:var(--card);font-weight:600}
+    .chip .dot{width:8px;height:8px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{background:var(--glass-grad);border:1px solid var(--border);border-radius:24px;box-shadow:0 10px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08)}
+    .card h2{margin:0 0 8px;font-size:clamp(16px,2.2vw,22px)}
+    .components{grid-column:span 5;padding:18px}
+    .incidents{grid-column:span 7;padding:18px}
+    @media (max-width:980px){.components,.incidents{grid-column:1 / -1}}
+
+    .comp{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;border:1px solid var(--border-soft);background:rgba(255,255,255,.02);transition:transform .18s ease,background .18s ease,border-color .18s ease}
+    .comp:hover{transform:translateY(-2px);background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.18)}
+    .comp+.comp{margin-top:10px}
+    .comp-name{font-weight:700}.comp-sub{color:var(--sub);font-size:.9rem}
+
+    .status-ok{color:var(--ok)}.status-warn{color:var(--warn)}.status-part{color:var(--part)}.status-down{color:var(--down)}.status-maint{color:var(--maint)}
+
+    .inc{border:1px solid var(--border-soft);border-radius:18px;padding:14px;background:rgba(255,255,255,.02)}
+    .inc+.inc{margin-top:12px}
+    .inc-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .inc-title{margin:0;font-weight:800;letter-spacing:.2px}
+    .inc-meta{color:var(--sub);font-size:.9rem}
+
+    details{margin-top:8px;border-top:1px dashed var(--border-soft);padding-top:10px}
+    details summary{cursor:pointer;color:var(--muted)}
+    .updates{list-style:none;padding:0;margin:10px 0 0}
+    .updates li{padding:8px 0;border-bottom:1px dashed var(--border-soft)}
+    .updates li:last-child{border-bottom:0}
+    .updates time{color:var(--sub);font-variant-numeric:tabular-nums}
+
+    .skeleton{position:relative;overflow:hidden;background:rgba(255,255,255,.04);border-radius:8px;height:12px}
+    .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.15),rgba(255,255,255,0));animation:shimmer 1.3s infinite}
+    @keyframes shimmer{100%{transform:translateX(100%)}}
+
+    footer{margin-top:18px;color:var(--sub);text-align:center;font-size:.9rem}
+
+    canvas#fx{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1}
+    @media (prefers-reduced-motion:reduce){.veil,.grain::before,.dot.pulse{animation:none!important}canvas#fx{display:none}}
+  </style>
+</head>
+<body>
+  <div class="veil" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="site">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <div class="brand">Status</div>
+        <div class="muted" id="lastUpdated">Loading…</div>
+      </div>
+      <div style="margin-left:auto" class="bar">
+        <span class="chip" id="overallChip"><span class="dot"></span><span>Checking…</span></span>
+        <button id="refreshBtn" class="chip" title="Refresh">↻ Refresh</button>
+        <label class="chip" title="Auto refresh"><input id="autoRefresh" type="checkbox" style="accent-color:#000000"> auto</label>
+      </div>
+    </header>
+
+    <section class="banner" id="banner">
+      <span class="dot pulse" id="bannerDot"></span>
+      <div>
+        <h1 id="bannerText">Loading status…</h1>
+        <small id="bannerDesc">Fetching data</small>
+      </div>
+    </section>
+
+    <div class="grid" style="margin-top:18px">
+      <section class="card components">
+        <h2>Components</h2>
+        <div id="components">
+          <div class="comp"><span class="skeleton" style="width:18px;height:18px;border-radius:50%"></span><div style="flex:1"><div class="skeleton" style="width:40%"></div><div class="skeleton" style="width:30%;margin-top:6px"></div></div></div>
+          <div class="comp"><span class="skeleton" style="width:18px;height:18px;border-radius:50%"></span><div style="flex:1"><div class="skeleton" style="width:50%"></div><div class="skeleton" style="width:25%;margin-top:6px"></div></div></div>
+        </div>
+      </section>
+
+      <section class="card incidents">
+        <h2>Incidents</h2>
+        <div id="incidents"><div class="inc"><div class="skeleton" style="width:70%;height:18px"></div><div class="skeleton" style="width:40%;margin-top:8px"></div></div></div>
+      </section>
+
+  <svg width="0" height="0" style="position:absolute"><filter id="grainy"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="11"><animate attributeName="seed" from="11" to="200" dur="5s" repeatCount="indefinite"/></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix><feComponentTransfer><feFuncA type="table" tableValues="0 0.6"/></feComponentTransfer></filter></svg>
+
+  <script>
+  (()=>{const c=document.getElementById('fx'),x=c.getContext('2d'),D=Math.min(devicePixelRatio||1,2);let W=0,H=0;const R=()=>{W=c.width=Math.floor(innerWidth*D);H=c.height=Math.floor(innerHeight*D);c.style.width='100vw';c.style.height='100vh'};addEventListener('resize',R,{passive:true});R();class P{constructor(a,b,d,e,f,g,h){this.x=a;this.y=b;this.vx=d;this.vy=e;this.life=f;this.max=f;this.size=g;this.h=h}step(a){this.life-=a;if(this.life<=0)return false;this.vy+=10*a;this.x+=this.vx*a;this.y+=this.vy*a;return !(this.y>H+20||this.x<-20||this.x>W+20)}draw(a){const b=this.life/this.max;a.globalCompositeOperation='lighter';const d=Math.max(0,Math.min(1,b))*0.9;/* remove blue hue, use neutral grayscale */a.fillStyle=`hsla(0,0%,${40+35*(1-b)}%,${d})`;a.beginPath();a.arc(this.x,this.y,this.size*(0.6+0.4*b),0,Math.PI*2);a.fill()}}const S={ps:[],last:performance.now()};function T(a,b,d=4){for(let e=0;e<d;e++){const f=Math.random()*Math.PI*2,g=30+Math.random()*60;S.ps.push(new P(a,b,Math.cos(f)*g,Math.sin(f)*g,0.8+Math.random()*0.6,1+Math.random()*2,0))}}function B(a,b,d=1){const e=Math.floor(40*d);for(let f=0;f<e;f++){const g=f/e*Math.PI*2+Math.random()*0.2,h=80+Math.random()*180*d;S.ps.push(new P(a,b,Math.cos(g)*h,Math.sin(g)*h,0.9+Math.random()*1.2,1.2+Math.random()*2.8,0))}}addEventListener('mousemove',a=>{const b=c.getBoundingClientRect(),d=(a.clientX-b.left)*D,e=(a.clientY-b.top)*D;S.last=performance.now();T(d,e,3)},{passive:true});addEventListener('click',a=>{const b=c.getBoundingClientRect();B((a.clientX-b.left)*D,(a.clientY-b.top)*D,1.2)});let p=performance.now();function L(a){const b=Math.min(0.033,(a-p)/1000);p=a;x.clearRect(0,0,W,H);for(let d=S.ps.length-1;d>=0;d--){const e=S.ps[d];if(!e.step(b))S.ps.splice(d,1);else e.draw(x)}const d=x.createRadialGradient(W*.5,H*.4,Math.min(W,H)*.05,W*.5,H*.5,Math.max(W,H)*.7);d.addColorStop(0,'rgba(0,0,0,0)');d.addColorStop(1,'rgba(0,0,0,.25)');x.fillStyle=d;x.fillRect(0,0,W,H);requestAnimationFrame(L)}requestAnimationFrame(L)})();
+  </script>
+
+  <script>
+  (()=>{
+    const $=s=>document.querySelector(s),componentsEl=$('#components'),incidentsEl=$('#incidents'),lastUpdatedEl=$('#lastUpdated'),bannerText=$('#bannerText'),bannerDesc=$('#bannerDesc'),bannerDot=$('#bannerDot'),chip=$('#overallChip'),refreshBtn=$('#refreshBtn'),autoRefresh=$('#autoRefresh');
+    const COMP_RANK={operational:0,degraded:1,partial_outage:2,major_outage:3,maintenance:1};
+    const mapOverall=s=>({ok:['status-ok','All systems operational'],minor:['status-warn','Minor issues'],partial:['status-part','Partial degradation'],major:['status-down','Major issues'],outage:['status-down','Global outage']})[s]||['status-ok','All systems operational'];
+    const compClass=s=>s==='operational'?'status-ok':s==='degraded'?'status-warn':s==='partial_outage'?'status-part':s==='major_outage'?'status-down':s==='maintenance'?'status-maint':'status-ok';
+    const labelComp=s=>s==='operational'?'Operational':s==='degraded'?'Degraded':s==='partial_outage'?'Partial Outage':s==='major_outage'?'Major Outage':s==='maintenance'?'Maintenance':'Unknown';
+    const labelUpd=s=>s==='investigating'?'Investigating':s==='identified'?'Identified':s==='monitoring'?'Monitoring':s==='resolved'?'Resolved':s==='in_progress'?'In Progress':s==='completed'?'Completed':s==='update'?'Update':'Status';
+    const fmt=d=>{const t=d instanceof Date?d:new Date(d);return t.toLocaleString(undefined,{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'})};
+    const rel=d=>{const t=new Date(d).getTime(),diff=Math.round((Date.now()-t)/1000),abs=Math.abs(diff),u=abs<60?['sec',1]:abs<3600?['min',60]:abs<86400?['h',3600]:['d',86400],v=Math.floor(abs/u[1]);return diff>=0?`${v} ${u[0]} ago`:`in ${v} ${u[0]}`};
+    const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]||c));
+    const computeOverall=cs=>{let w=0;for(const c of cs)w=Math.max(w,COMP_RANK[c.status]??0);return w>=3?'major':w===2?'partial':w===1?'minor':'ok'};
+    function setDot(el,cls){el.className=`dot pulse ${cls}`}
+    function applyOverall(s,updated){const [cls,label]=mapOverall(s);setDot(bannerDot,cls);bannerText.textContent=label;bannerDesc.textContent=updated?`Last update: ${fmt(updated)} (${rel(updated)})`:'';const d=chip.querySelector('.dot')||document.createElement('span');d.className=`dot ${cls}`;d.style.marginRight='2px';chip.replaceChildren(d,document.createTextNode(label))}
+    function renderComponents(list){componentsEl.innerHTML='';list.forEach(c=>{const li=document.createElement('div');li.className='comp';const dot=document.createElement('span');dot.className=`dot pulse ${compClass(c.status)}`;dot.title=c.status.replace('_',' ');const main=document.createElement('div');main.style.flex='1';const name=document.createElement('div');name.className='comp-name';name.textContent=c.name;const sub=document.createElement('div');sub.className='comp-sub';const up=typeof c.uptime_90d==='number'?` · 90d Uptime: ${c.uptime_90d.toFixed(2)}%`:'';sub.textContent=labelComp(c.status)+up;main.appendChild(name);main.appendChild(sub);li.appendChild(dot);li.appendChild(main);componentsEl.appendChild(li)})}
+    function sevChip(sev){const w=document.createElement('span');w.className='chip';const d=document.createElement('span');d.className='dot';const t=document.createElement('span');if(sev==='minor'){d.classList.add('status-warn');t.textContent='Minor'}else if(sev==='major'||sev==='critical'){d.classList.add('status-down');t.textContent=sev==='critical'?'Critical':'Major'}else if(sev==='maintenance'){d.classList.add('status-maint');t.textContent='Maintenance'}else{d.classList.add('status-ok');t.textContent='Info'}w.appendChild(d);w.appendChild(t);return w}
+    function renderIncidents(list){incidentsEl.innerHTML='';if(!list||list.length===0){const e=document.createElement('div');e.className='inc';e.innerHTML='<div class="inc-head"><span class="muted">No incidents</span></div>';incidentsEl.appendChild(e);return}list.sort((a,b)=>new Date(b.start)-new Date(a.start));list.forEach(inc=>{const box=document.createElement('div');box.className='inc';const head=document.createElement('div');head.className='inc-head';head.appendChild(sevChip(inc.severity));const h3=document.createElement('h3');h3.className='inc-title';h3.textContent=inc.title;head.appendChild(h3);const meta=document.createElement('div');meta.className='inc-meta';const when=inc.end?`${fmt(inc.start)} — ${fmt(inc.end)}`:`${fmt(inc.start)} · ongoing`;const aff=inc.affected&&inc.affected.length?` · Affected: ${inc.affected.join(', ')}`:'';meta.textContent=`${when}${aff}`;head.appendChild(meta);box.appendChild(head);if(inc.updates&&inc.updates.length){const details=document.createElement('details');details.open=true;const sum=document.createElement('summary');sum.textContent='Updates';details.appendChild(sum);const ul=document.createElement('ol');ul.className='updates';inc.updates.sort((a,b)=>new Date(b.time)-new Date(a.time));inc.updates.forEach(u=>{const li=document.createElement('li');const when=document.createElement('time');when.dateTime=new Date(u.time).toISOString();when.textContent=`${fmt(u.time)} (${rel(u.time)})`;const text=document.createElement('span');text.innerHTML=` — <strong>${esc(labelUpd(u.status))}</strong>: ${esc(u.text)}`;li.appendChild(when);li.appendChild(text);ul.appendChild(li)});details.appendChild(ul);box.appendChild(details)}incidentsEl.appendChild(box)})}
+    function aggregate(data){return data.status||computeOverall(data.components||[])}
+    async function loadData(){lastUpdatedEl.textContent='Refreshing…';try{const r=await fetch('status.json',{cache:'no-store'});if(!r.ok)throw new Error('http '+r.status);const data=await r.json();applyOverall(aggregate(data),data.last_updated);renderComponents(data.components||[]);renderIncidents(data.incidents||[]);lastUpdatedEl.textContent=`Last update: ${fmt(data.last_updated||Date.now())}`}catch(e){applyOverall('major');bannerDesc.textContent='Failed to load status.json';componentsEl.innerHTML='';incidentsEl.innerHTML='<div class="inc"><div class="inc-head"><span class="muted">Could not load data</span></div></div>';lastUpdatedEl.textContent='Error' }}
+    document.getElementById('refreshBtn').addEventListener('click',loadData);let iv=null;autoRefresh.addEventListener('change',()=>{if(autoRefresh.checked){iv=setInterval(loadData,60000)}else{clearInterval(iv);iv=null}});
+    loadData();
+  })();
+  </script>
+</body>
+</html>
