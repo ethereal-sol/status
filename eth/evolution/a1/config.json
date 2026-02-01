@@ -1,7 +1,7 @@
 {
   "version": 1,
   "allow_login": false,
-  "deny_reason": "ya lox",
+  "deny_reason": "closed reason: 123123123 а",
   "kill_switch": false,
   "refresh_sec": 10
 }
