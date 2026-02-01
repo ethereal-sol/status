@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "allow_login": false,
-  "deny_reason": "closed reason: 123123123 а",
+  "allow_login": true,
+  "deny_reason": "",
   "kill_switch": false,
   "refresh_sec": 10
 }
