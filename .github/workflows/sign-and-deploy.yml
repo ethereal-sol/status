@@ -31,14 +31,14 @@ jobs:
           echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
           chmod 600 ed25519_priv.pem
 
-      - name: Sign JSON files (config.json + ui.json) in eth/evolution/a1/
+      - name: Sign JSON files (config.json + ui.json) in eth/evolution/a2/
         shell: bash
         run: |
           set -euo pipefail
           trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
           set -x
 
-          DIR="eth/evolution/a1"
+          DIR="eth/evolution/a2"
 
           sign_one () {
             local f="$1"
