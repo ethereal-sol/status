@@ -3,7 +3,7 @@
   "last_updated": "2026-02-11T17:30:00Z",
   "components": [
     { "id": "web",  "name": "Website",        "status": "operational",   "uptime_90d": 100.00 },
-    { "id": "dlc",  "name": "1.5a f/evo",     "status": "major outage",  "uptime_90d": 0.00 },
+    { "id": "dlc",  "name": "1.5a f/evo",     "status": "outage",        "uptime_90d": 0.00 },
     { "id": "dlc",  "name": "1.5a2 f/evo",    "status": "operational",   "uptime_90d": 100.00 }
   ],
   "incidents": [
