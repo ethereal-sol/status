@@ -1,24 +1,10 @@
 {
   "status": "operational",
-  "last_updated": "2026-02-11T17:30:00Z",
+  "last_updated": "2026-02-18T14:20:00Z",
   "components": [
-    { "id": "web",  "name": "Website",        "status": "operational",   "uptime_90d": 100.00 },
-    { "id": "dlc",  "name": "1.5a f/evo",     "status": "maintenance",   "uptime_90d": 0.00 },
-    { "id": "dlc",  "name": "1.5a2 f/evo",    "status": "operational",   "uptime_90d": 100.00 }
+    { "id": "web",  "name": "Website",         "status": "operational",   "uptime_90d": 100.00 },
+    { "id": "dlc",  "name": "1.5a2 (for evo)", "status": "operational",   "uptime_90d": 100.00 }
   ],
   "incidents": [
-    {
-      "id": "2025-12-01-1",
-      "title": "DLC incompatibility with server update",
-      "severity": "critical",
-      "start": "2025-12-01T14:00:00Z",
-      "end": "2025-12-01T16:00:00Z",
-      "affected": ["ethereal 1.1p1"],
-      "updates": [
-        { "time": "2025-12-01T14:25:00Z", "status": "investigating", "text": "Ошибки в DLC, изучаем." },
-        { "time": "2025-12-01T14:35:00Z", "status": "identified",    "text": "Несовместимость с обновлением сервера." },
-        { "time": "2025-12-01T15:05:00Z", "status": "resolved",      "text": "Выпустили патч 1.1p2." }
-      ]
-    }
   ]
 }
