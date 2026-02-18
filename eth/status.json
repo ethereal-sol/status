@@ -3,7 +3,7 @@
   "last_updated": "2026-02-18T14:20:00Z",
   "components": [
     { "id": "web",  "name": "Website",         "status": "operational",   "uptime_90d": 100.00 },
-    { "id": "dlc",  "name": "1.5a2 (for evo)", "status": "operational",   "uptime_90d": 100.00 }
+    { "id": "dlc",  "name": "1.5a2 (for evo)", "status": "maintenance",   "uptime_90d": 100.00 }
   ],
   "incidents": [
   ]
