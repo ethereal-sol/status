@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "allow_login": true,
-  "deny_reason": "lol",
+  "allow_login": false,
+  "deny_reason": "test",
   "kill_switch": false,
-  "refresh_sec": 10
+  "refresh_sec": 3
 }
