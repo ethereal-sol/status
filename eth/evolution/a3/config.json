@@ -1,7 +1,7 @@
 {
   "version": 3,
-  "allow_login": true,
-  "deny_reason": "",
-  "kill_switch": false,
+  "allow_login": false,
+  "deny_reason": "outdated",
+  "kill_switch": true,
   "refresh_sec": 15
 }
