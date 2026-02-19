@@ -4,7 +4,7 @@
   "components": [
     { "id": "web",  "name": "Website",         "status": "operational",   "uptime_90d": 100.00 },
     { "id": "dlc",  "name": "1.5a2 (for evo)", "status": "major_outage",  "uptime_90d":   0.00 },
-    { "id": "dlc",  "name": "1.5a3 [f-e]",     "status": "operational",   "uptime_90d": 100.00 },
+    { "id": "dlc",  "name": "1.5a3 [f-e]",     "status": "operational",   "uptime_90d": 100.00 }
   ],
   "incidents": [
   ]
