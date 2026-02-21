@@ -38,7 +38,7 @@ jobs:
           trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
           set -x
 
-          DIR="eth/evolution/a3/v2"
+          DIR="eth/evolution/a1"
 
           sign_one () {
             local f="$1"
