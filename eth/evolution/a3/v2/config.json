@@ -1,6 +1,6 @@
 {
   "version": 3.1,
-  "allow_login": false,
+  "allow_login": true,
   "deny_reason": "",
   "kill_switch": false,
   "refresh_sec": 15
