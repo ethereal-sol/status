@@ -1,7 +1,7 @@
 {
   "version": 3,
   "allow_login": false,
-  "deny_reason": "outdated",
-  "kill_switch": true,
+  "deny_reason": "OBHOBA B t.me/pastereal",
+  "kill_switch": false,
   "refresh_sec": 15
 }
