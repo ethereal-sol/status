@@ -1,8 +1,8 @@
 {
   "version": 3.3,
-  "allow_login": false,
+  "allow_login": true,
   "allow_heads": true,
-  "deny_reason": "ыыы",
+  "deny_reason": "",
   "heads_deny_reason": "",
   "kill_switch": false,
   "refresh_sec": 15
