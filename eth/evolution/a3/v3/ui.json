@@ -1,10 +1,10 @@
 {
-  "software_name": "ethereal architectures",
+  "software_name": "ethereal 1.5a3 (third)",
   "subscribe_text": "подпишись на наши телеграм каналы",
   "button_left": "pastereal",
   "button_right": "ethereal architectures",
 
-  "strings": { "ru": { "loading.title": "loaded!" } }
+  "strings": { "ru": { "loading.title": "loaded!" } },
 
   "runtime": {
     "allow_access": true,
