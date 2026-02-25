@@ -1,9 +1,9 @@
 {
   "version": 3.3,
   "allow_login": true,
-  "allow_heads": false,
+  "allow_heads": true,
   "deny_reason": "",
-  "heads_deny_reason": "бесплатный период окончен",
+  "heads_deny_reason": "",
   "kill_switch": false,
   "refresh_sec": 15
 }
