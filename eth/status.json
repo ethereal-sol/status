@@ -3,7 +3,7 @@
   "last_updated": "2026-02-19T11:50:00Z",
   "components": [
     { "id": "web",  "name": "Website",         "status": "operational",   "uptime_90d": 100.00 },
-    { "id": "dlc",  "name": "1.5a3 [2]",       "status": "operational",   "uptime_90d": 100.00 }
+    { "id": "dlc",  "name": "1.5a3 [2]",       "status": "major_outage",  "uptime_90d": 0.00 }
   ],
   "incidents": [
   ]
