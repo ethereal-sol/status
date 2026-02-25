@@ -1,8 +1,8 @@
 {
-  "status": "open",
-  "reason": "",
+  "status": "closed",
+  "reason": "1.2-b2 is an outdated version and wont be supported no more.",
   "min_version": "1.2.2",
-  "latest_version": "1.2.2",
-  "force_update": false,
+  "latest_version": "1.5r-sc",
+  "force_update": true,
   "sig": "YkAy0uSqw7sCt7nYdX6AMsE6tnUlkTmaYna/FVMF88pdbqzjLcJJdCQ7p9ywm/TnnrRJCmBeOLh+ld5vr8ACCQ=="
 }
