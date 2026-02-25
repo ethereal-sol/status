@@ -4,7 +4,7 @@
   "button_left": "pastereal",
   "button_right": "ethereal architectures",
 
-  "strings": { "ru": { "loading.title": "loaded!" } },
+  "strings": { "ru": { "loading.title": "loaded!" } }
 
   "runtime": {
     "allow_access": true,
