@@ -1,9 +1,9 @@
 {
   "version": 3.3,
   "allow_login": true,
-  "allow_heads": true,
+  "allow_heads": false,
   "deny_reason": "",
-  "heads_deny_reason": "",
+  "heads_deny_reason": "Бесплатный период окончен. Спасибо, что воспользовался!",
   "kill_switch": false,
   "refresh_sec": 15
 }
