@@ -1,8 +1,8 @@
 {
-  "software_name": "ethereal 1.5a3 (third)",
+  "software_name": "Ethereal 1.5a3 - third var.",
   "subscribe_text": "подпишись на наши телеграм каналы",
-  "button_left": "pastereal",
-  "button_right": "ethereal architectures",
+  "button_left": "Основной канал Эфириала",
+  "button_right": "Экосистема",
 
   "strings": { "ru": { "loading.title": "loaded!" } },
 
@@ -12,6 +12,6 @@
     "show_text": true,
     "message": "",
     "tg_left": "pastereal",
-    "tg_right": "ethereal_solutions"
+    "tg_right": "ethereal_architectures"
   }
 }
