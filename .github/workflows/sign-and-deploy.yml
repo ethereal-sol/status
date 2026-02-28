@@ -4,7 +4,9 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "eth/**"
+      - "eth/evolution/a3/v3**"
+      - "eth/harmony/a3/v3**"
+      - "eth/pudj/a3/v3**"
       - ".github/workflows/sign-and-deploy.yml"
   workflow_dispatch:
 
@@ -31,14 +33,19 @@ jobs:
           echo "${{ secrets.ED25519_PRIV_PEM_B64 }}" | base64 -d > ed25519_priv.pem
           chmod 600 ed25519_priv.pem
 
-      - name: Sign JSON files (config.json + ui.json) in eth/evolution/a2/
+      - name: Sign JSON files in multiple dirs
         shell: bash
         run: |
           set -euo pipefail
+          trap 'rm -f ed25519_priv.pem' EXIT
           trap 'echo "::error::Failed on line $LINENO"; exit 1' ERR
           set -x
 
-          DIR="eth/evolution/a3/v3"
+          DIRS=(
+            "eth/evolution/a3/v3"
+            "eth/harmony/a3/v3"
+            "eth/pudj/a3/v3"
+          )
 
           sign_one () {
             local f="$1"
@@ -52,16 +59,17 @@ jobs:
             rm -f "$bin"
           }
 
-          sign_one "$DIR/config.json"
-          sign_one "$DIR/ui.json"
-
-          rm -f ed25519_priv.pem
+          for DIR in "${DIRS[@]}"; do
+            echo "Signing in: $DIR"
+            sign_one "$DIR/config.json"
+            sign_one "$DIR/ui.json"
+          done
 
       - name: Debug tree
         shell: bash
         run: |
           echo "=== Files that will be published (eth/) ==="
-          find eth -type f -maxdepth 6 -print
+          find eth -maxdepth 6 -type f -print
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
