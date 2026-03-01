@@ -1,8 +1,8 @@
 {
   "version": 3.3,
-  "allow_login": true,
+  "allow_login": false,
   "allow_heads": true,
-  "deny_reason": "",
+  "deny_reason": "Софт на пудж отключен. Играй с софтом на эво.",
   "heads_deny_reason": "",
   "kill_switch": false,
   "refresh_sec": 15
