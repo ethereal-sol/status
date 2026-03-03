@@ -1,8 +1,8 @@
 {
   "version": 1.5,
-  "allow_login": true,
+  "allow_login": false,
   "allow_heads": false,
-  "deny_reason": "",
+  "deny_reason": "патч",
   "heads_deny_reason": "Тех работы",
   "kill_switch": false,
   "refresh_sec": 15
