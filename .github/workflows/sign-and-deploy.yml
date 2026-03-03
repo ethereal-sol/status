@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "eth/evolution/a3/v3**"
+      - "eth/evolution/1.5s/b1-v1**"
       - "eth/harmony/a3/v3**"
       - "eth/pudj/a3/v3**"
       - ".github/workflows/sign-and-deploy.yml"
