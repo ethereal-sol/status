@@ -1,7 +1,7 @@
 {
-  "software_name": "Ethereal 1.5a3 - third var.",
+  "software_name": "1.5s (beta-1)",
   "subscribe_text": "подпишись на наши телеграм каналы",
-  "button_left": "Основной канал Эфириала",
+  "button_left": "Основа",
   "button_right": "Экосистема",
 
   "strings": { "ru": { "loading.title": "loaded!" } },
