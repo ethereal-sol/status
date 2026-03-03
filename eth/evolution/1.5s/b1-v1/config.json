@@ -1,7 +1,7 @@
 {
   "version": 1.0,
   "allow_login": true,
-  "allow_heads": true,
+  "allow_heads": false,
   "deny_reason": "",
   "heads_deny_reason": "ыы",
   "kill_switch": false,
