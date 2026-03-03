@@ -7,6 +7,7 @@ on:
       - "eth/evolution/a3/v3**"
       - "eth/evolution/1.5s/b1-v1**"
       - "eth/evolution/1.5b/1**"
+      - "eth/evolution/1.5b/2**"
       - "eth/harmony/a3/v3**"
       - "eth/pudj/a3/v3**"
       - ".github/workflows/sign-and-deploy.yml"
@@ -47,6 +48,7 @@ jobs:
             "eth/evolution/a3/v3"
             "eth/evolution/1.5s/b1-v1"
             "eth/evolution/1.5b/1"
+            "eth/evolution/1.5b/2"
             "eth/harmony/a3/v3"
             "eth/pudj/a3/v3"
           )
