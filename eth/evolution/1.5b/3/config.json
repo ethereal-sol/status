@@ -1,6 +1,6 @@
 {
   "version": 1.7,
-  "allow_login": false,
+  "allow_login": true,
   "allow_heads": true,
   "deny_reason": "",
   "heads_deny_reason": "",
