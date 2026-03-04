@@ -2,7 +2,7 @@
   "version": 1.6,
   "allow_login": false,
   "allow_heads": true,
-  "deny_reason": "скоро патч выйдет",
+  "deny_reason": "Доступно обновление, скачай в телеграме.",
   "heads_deny_reason": "",
   "kill_switch": false,
   "refresh_sec": 15
