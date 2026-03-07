@@ -1,9 +1,9 @@
 {
   "version": 1.0,
   "allow_login": true,
-  "allow_heads": true,
+  "allow_heads": false,
   "deny_reason": "",
-  "heads_deny_reason": "",
+  "heads_deny_reason": "доигрался",
   "kill_switch": false,
   "refresh_sec": 15
 }
