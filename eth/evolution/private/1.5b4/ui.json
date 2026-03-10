@@ -1,0 +1,17 @@
+{
+  "software_name": "1.5b4 (private)",
+  "subscribe_text": "подпишись на наши телеграм каналы",
+  "button_left": "Основа",
+  "button_right": "Экосистема",
+
+  "strings": { "ru": { "loading.title": "loaded!" } },
+
+  "runtime": {
+    "allow_access": true,
+    "force_close_menu": false,
+    "show_text": true,
+    "message": "",
+    "tg_left": "pastereal",
+    "tg_right": "ethereal_architectures"
+  }
+}
