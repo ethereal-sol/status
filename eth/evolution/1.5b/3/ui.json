@@ -10,14 +10,8 @@
     "allow_access": true,
     "force_close_menu": false,
     "show_text": true,
-    "software_name": "ethereal",
     "message": "",
-    "channels": [
-      { "title": "pastereal", "url": "pastereal" },
-      { "title": "ethereal architectures", "url": "ethereal_architectures" },
-      { "title": "ethereal ai", "url": "ethereal_ai" },
-      { "title": "e", "url": "channel2" },
-      { "title": "et", "url": "channel" }
-    ]
+    "tg_left": "pastereal",
+    "tg_right": "ethereal_architectures"
   }
 }
