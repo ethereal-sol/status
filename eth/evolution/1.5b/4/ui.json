@@ -15,9 +15,7 @@
     "channels": [
       { "title": "pastereal", "url": "pastereal" },
       { "title": "ethereal architectures", "url": "ethereal_architectures" },
-      { "title": "ethereal ai", "url": "ethereal_ai" },
-      { "title": "e", "url": "channel2" },
-      { "title": "et", "url": "channel" }
+      { "title": "ethereal ai", "url": "ethereal_ai" }
     ]
   }
 }
