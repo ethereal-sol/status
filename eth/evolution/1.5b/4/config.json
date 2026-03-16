@@ -1,7 +1,7 @@
 {
   "version": 1.8,
   "allow_login": true,
-  "allow_heads": true,
+  "allow_heads": false,
   "deny_reason": "",
   "heads_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "kill_switch": false,
