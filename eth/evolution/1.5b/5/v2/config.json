@@ -2,7 +2,7 @@
   "version": 1.9,
   "allow_login": true,
   "allow_heads": false,
-  "allow_aim": false,
+  "allow_aim": true,
   "deny_reason": "",
   "heads_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "aim_deny_reason": "окак",
