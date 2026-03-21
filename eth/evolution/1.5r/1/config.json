@@ -1,11 +1,11 @@
 {
   "version": 2.0,
-  "allow_login": false,
-  "allow_heads": false,
+  "allow_login": true,
+  "allow_heads": true,
   "allow_aim": false,
   "deny_reason": "тех работы",
   "heads_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "aim_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "kill_switch": false,
-  "refresh_sec": 45
+  "refresh_sec": 1
 }
