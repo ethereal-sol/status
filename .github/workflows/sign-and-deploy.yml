@@ -16,6 +16,7 @@ on:
       - "eth/evolution/private/1.5b4**"
       - "eth/evolution/private/1.5b5**"
       - "eth/evolution/private/1.5r1**"
+      - "eth/evolution/private/1.5r2b**"
       - "eth/harmony/a3/v3**"
       - "eth/pudj/a3/v3**"
       - ".github/workflows/sign-and-deploy.yml"
@@ -65,6 +66,7 @@ jobs:
             "eth/evolution/private/1.5b4"
             "eth/evolution/private/1.5b5"
             "eth/evolution/private/1.5r1"
+            "eth/evolution/private/1.5r2b"
             "eth/harmony/a3/v3"
             "eth/pudj/a3/v3"
           )
