@@ -1,6 +1,6 @@
 {
   "version": 2.0,
-  "allow_login": false,
+  "allow_login": true,
   "allow_heads": true,
   "deny_reason": "вышло обновление",
   "heads_deny_reason": "",
