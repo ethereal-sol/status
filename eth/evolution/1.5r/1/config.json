@@ -1,6 +1,6 @@
 {
   "version": 2.0,
-  "allow_login": true,
+  "allow_login": false,
   "allow_heads": false,
   "allow_aim": false,
   "deny_reason": "Устаревшая версия (r1)",
