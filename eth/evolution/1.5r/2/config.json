@@ -1,9 +1,9 @@
 {
   "version": 2.0,
-  "allow_login": true,
+  "allow_login": false,
   "allow_heads": false,
   "allow_aim": false,
-  "deny_reason": "",
+  "deny_reason": "Технические работы. Следи за новостями в телеграм канале",
   "heads_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "aim_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "kill_switch": false,
