@@ -13,6 +13,7 @@ on:
       - "eth/evolution/1.5b/5**"
       - "eth/evolution/1.5b/5/v2**"
       - "eth/evolution/1.5r/1**"
+      - "eth/evolution/1.5r/2.1**"
       - "eth/evolution/1.5r/2**"
       - "eth/evolution/private/1.5b4**"
       - "eth/evolution/private/1.5b5**"
@@ -21,8 +22,6 @@ on:
       - "eth/evolution/private/1.5r/2.1**"
       - "eth/evolution/private/1.5r/2.2**"
       - "eth/evolution/private/1.5r2b**"
-      - "eth/harmony/a3/v3**"
-      - "eth/pudj/a3/v3**"
       - ".github/workflows/sign-and-deploy.yml"
   workflow_dispatch:
 
@@ -68,6 +67,7 @@ jobs:
             "eth/evolution/1.5b/5/v2"
             "eth/evolution/1.5r/1"
             "eth/evolution/1.5r/2"
+            "eth/evolution/1.5r/2.1"
             "eth/evolution/private/1.5b4"
             "eth/evolution/private/1.5b5"
             "eth/evolution/private/1.5r1"
