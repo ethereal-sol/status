@@ -1,0 +1,21 @@
+{
+  "software_name": "Acheron 1.5r (2.1)",
+  "subscribe_text": "подпишись на наши телеграм каналы",
+  "button_left": "Основной канал",
+  "button_right": "Запасной канал",
+
+  "strings": { "ru": { "loading.title": "hi from nyashka <3" } },
+
+  "runtime": {
+    "allow_access": true,
+    "force_close_menu": false,
+    "show_text": true,
+    "software_name": "ethereal",
+    "message": "",
+    "channels": [
+      { "title": "pastereal", "url": "pastereal" },
+      { "title": "eth architectures", "url": "ethereal_architectures" },
+      { "title": "acheron", "url": "acheron_software" }
+    ]
+  }
+}
