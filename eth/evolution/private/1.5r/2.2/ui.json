@@ -1,0 +1,17 @@
+{
+  "software_name": "ethereal private 1.5r (2.2)",
+  "subscribe_text": "подпишись на наши телеграм каналы",
+  "button_left": "Основа",
+  "button_right": "Экосистема",
+
+  "strings": { "ru": { "loading.title": "loaded!" } },
+
+  "runtime": {
+    "allow_access": true,
+    "force_close_menu": false,
+    "show_text": true,
+    "message": "",
+    "tg_left": "pastereal",
+    "tg_right": "ethereal_architectures"
+  }
+}
