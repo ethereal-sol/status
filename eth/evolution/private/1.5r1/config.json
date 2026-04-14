@@ -4,6 +4,6 @@
   "allow_heads": true,
   "deny_reason": "вышло обновление",
   "heads_deny_reason": "",
-  "kill_switch": false,
+  "kill_switch": true,
   "refresh_sec": 15
 }
