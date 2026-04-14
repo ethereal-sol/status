@@ -3,9 +3,9 @@
   "allow_login": false,
   "allow_heads": false,
   "allow_aim": false,
-  "deny_reason": "",
+  "deny_reason": "Все новости -- в канале",
   "heads_deny_reason": "",
   "aim_deny_reason": "",
-  "kill_switch": true,
+  "kill_switch": false,
   "refresh_sec": 1
 }
