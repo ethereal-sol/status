@@ -6,6 +6,6 @@
   "deny_reason": "Устаревшая версия",
   "heads_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
   "aim_deny_reason": "Данная функция перенесена в платную версию. Купить: t.me/ethereal_private_bot",
-  "kill_switch": false,
+  "kill_switch": true,
   "refresh_sec": 1
 }
