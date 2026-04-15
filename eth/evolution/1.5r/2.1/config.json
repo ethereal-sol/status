@@ -6,6 +6,6 @@
   "deny_reason": "Все новости -- в канале",
   "heads_deny_reason": "",
   "aim_deny_reason": "",
-  "kill_switch": false,
+  "kill_switch": true,
   "refresh_sec": 1
 }
