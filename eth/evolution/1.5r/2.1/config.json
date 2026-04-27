@@ -1,9 +1,9 @@
 {
   "version": 2.1,
-  "allow_login": true,
+  "allow_login": false,
   "allow_heads": false,
   "allow_aim": false,
-  "deny_reason": "Все новости -- в канале",
+  "deny_reason": "обнова",
   "heads_deny_reason": "",
   "aim_deny_reason": "",
   "kill_switch": false,
